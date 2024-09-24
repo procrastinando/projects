@@ -171,6 +171,7 @@ def success(csv_data):
 
 # Streamlit UI
 st.set_page_config(page_title="CSV translator", page_icon="/projects/icon.webp")
+st.title("CSV translator App")
 
 st.sidebar.markdown("""
 ### CSV Translation Application Overview
@@ -197,8 +198,6 @@ The application sets up a web page where users can select the translation method
 
 Overall, this code enables seamless translation of CSV files by leveraging different APIs, with a user-friendly interface built using Streamlit.
 """)
-
-st.title("CSV translator App")
 
 def main():
     method_choice = st.selectbox("Choose translation method", ("OpenAI", "Ollama", "Libre translate"))
