@@ -14,7 +14,8 @@ RUN git clone https://github.com/procrastinando/projects .
 RUN conda create --name projects python=3.10 -y \
     && conda activate projects \
     && pip install -r csv-translator/requirements.txt \
-    && pip install -r img2img/requirements.txt
+    && pip install -r img2img/requirements.txt \
+    && pip install -r sub2audio/requirements.txt
 
 # # Create a second conda environment
 # RUN conda create --name assistant python=3.9 -y \
