@@ -6,8 +6,21 @@ This is a docker deploy of demos of my personal projects
 sudo apt install -y curl git
 curl -fsSL https://get.docker.com | sudo sh
 ```
-### Install:
+### Build the image:
 ```
 docker build -t projects https://github.com/procrastinando/projects.git#main:.
-docker run -d -p 101:101 projects
+```
+### Option 1: Run by command:
+```
+docker run -d -p 50001:50001 -p 50002:50002 projects
+```
+### Option 2: Run it as stack:
+```
+services:
+  app:
+    image: projects
+    ports:
+      - "50001:50001"
+      - "50002:50002"
+    restart: unless-stopped
 ```

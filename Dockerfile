@@ -15,11 +15,15 @@ RUN conda create --name csv-translator python=3.10 -y \
     && /bin/bash -c "source activate csv-translator" \
     && pip install -r /projects/csv-translator/requirements.txt
 
+RUN conda create --name assistant python=3.9 -y \
+    && /bin/bash -c "source activate assistant" \
+    && pip install -r /projects/assistant/requirements.txt
+
 # Give execute permissions to the entrypoint script
 RUN chmod +x /projects/entrypoint.sh
 
 # Expose the ports for both projects
-EXPOSE 101
+EXPOSE 50001 50001
 
 # Start the entrypoint script
 CMD ["/projects/entrypoint.sh"]
