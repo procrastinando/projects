@@ -10,11 +10,10 @@ RUN apt-get update && apt-get install -y git && apt-get clean
 # Clone the projects
 RUN git clone https://github.com/procrastinando/projects
 
-# Create a conda environment for translator project and install dependencies
-RUN conda create --name translator python=3.10 -y \
-    && /bin/bash -c "source activate translator" \
-    && cd /projects/translator \
-    && pip install -r requirements.txt
+# Create a conda environment for csv-translator project and install dependencies
+RUN conda create --name csv-translator python=3.10 -y \
+    && /bin/bash -c "source activate csv-translator" \
+    && pip install -r /projects/csv-translator/requirements.txt
 
 # Give execute permissions to the entrypoint script
 RUN chmod +x /projects/entrypoint.sh
