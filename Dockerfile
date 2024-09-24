@@ -19,7 +19,7 @@ RUN conda create --name csv-translator python=3.10 -y \
 RUN chmod +x /projects/entrypoint.sh
 
 # Expose the ports for both projects
-EXPOSE 101 102
+EXPOSE 101
 
 # Start the entrypoint script
 CMD ["/projects/entrypoint.sh"]
