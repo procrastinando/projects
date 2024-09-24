@@ -82,34 +82,67 @@
 
 
 
-# Use the specified base image
+# # Use the specified base image
+# FROM continuumio/miniconda3
+
+# # Set the working directory
+# WORKDIR /projects
+
+# # Install necessary packages
+# RUN apt-get update && apt-get install -y git && apt-get clean
+
+# # Clone the repository
+# RUN git clone https://github.com/procrastinando/projects .
+
+# # Create a new conda environment
+# RUN conda create --name projects python=3.10 -y
+
+# # Activate the conda environment and install requirements
+# RUN echo "source activate projects" > ~/.bashrc
+# ENV PATH /opt/conda/envs/projects/bin:$PATH
+
+# RUN pip install -r csv-translator/requirements.txt \
+#     && pip install -r img2img/requirements.txt \
+#     && pip install -r sub2audio/requirements.txt
+
+# # Make the entrypoint script executable
+# RUN chmod +x /projects/entrypoint.sh
+
+# # Expose the specified ports
+# EXPOSE 50001 50002 50503
+
+# # Set the entrypoint
+# CMD ["/projects/entrypoint.sh"]
+
+
+
+# Use ContinuumIO Miniconda as the base image
 FROM continuumio/miniconda3
 
 # Set the working directory
 WORKDIR /projects
 
-# Install necessary packages
+# Install necessary system packages such as git
 RUN apt-get update && apt-get install -y git && apt-get clean
 
-# Clone the repository
-RUN git clone https://github.com/procrastinando/projects .
+# Clone the GitHub repository
+RUN git clone https://github.com/procrastinando/projects /projects
 
-# Create a new conda environment
+# Create a new conda environment and install Python 3.10
 RUN conda create --name projects python=3.10 -y
 
-# Activate the conda environment and install requirements
-RUN echo "source activate projects" > ~/.bashrc
-ENV PATH /opt/conda/envs/projects/bin:$PATH
+# Activate the environment and install requirements for each subproject
+RUN /bin/bash -c "source activate projects && \
+    pip install --upgrade pip && \ 
+    pip install -r csv-translator/requirements.txt && \
+    pip install -r img2img/requirements.txt && \
+    pip install -r sub2audio/requirements.txt"
 
-RUN pip install -r csv-translator/requirements.txt \
-    && pip install -r img2img/requirements.txt \
-    && pip install -r sub2audio/requirements.txt
-
-# Make the entrypoint script executable
+# Set execute permission for the entrypoint script
 RUN chmod +x /projects/entrypoint.sh
 
-# Expose the specified ports
-EXPOSE 50001 50002 50503
+# Expose ports
+EXPOSE 50001 50002 50003
 
-# Set the entrypoint
+# Start the container with the entry point script
 CMD ["/projects/entrypoint.sh"]
