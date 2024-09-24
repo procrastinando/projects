@@ -1,14 +1,5 @@
-
 import os
-import torch
-from parler_tts import ParlerTTSForConditionalGeneration
-from transformers import AutoTokenizer, AutoFeatureExtractor, set_seed
-import soundfile as sf
-import subprocess
-import pysrt
-import tempfile
 from datetime import datetime
-
 import time
 import streamlit as st
 
@@ -89,9 +80,9 @@ input_type = st.radio("Choose input type:", ["subtitle", "text"])
 if input_type == "subtitle":
     uploaded_file = st.file_uploader("Choose an SRT file", type="srt")
 else:
-    text_input = st.text_area("Enter your text:", height=200)
+    text_input = st.text_area("Enter your text:", value='Hello, everyone! This is an example of Text-to-Speech technology. It converts written text into spoken words, making information accessible and engaging. Imagine the possibilities for education, accessibility, and entertainment!', height=200)
 
-default_description = "Jon has a clear and natural voice with neutral intonation."
+default_description = "A female speaker delivers a slightly expressive and animated speech with a moderate speed and pitch. The recording is of very high quality, with the speaker's voice sounding clear and very close up."
 description = st.text_input("Enter voice description:", value=default_description)
 
 model_size = st.selectbox("Choose model size:", ["mini", "large"])

@@ -176,6 +176,8 @@ st.title("CSV translator App")
 st.sidebar.markdown("""
 ### CSV Translation Application Overview
 
+## [Original repository](https://github.com/procrastinando/translator)
+
 This code implements a CSV translation application using **Streamlit**, which allows users to translate the contents of a CSV file into different languages through various translation methods. Here's a breakdown of its key components:
 
 #### Libraries Used

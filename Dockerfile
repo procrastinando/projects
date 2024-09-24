@@ -24,7 +24,7 @@ RUN conda create --name projects python=3.10 -y \
 RUN chmod +x /projects/entrypoint.sh
 
 # Expose the ports for both projects
-EXPOSE 50001 50002
+EXPOSE 50001 50002 50003
 
 # Start the entrypoint script
 CMD ["/projects/entrypoint.sh"]

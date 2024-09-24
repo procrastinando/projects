@@ -9,6 +9,8 @@ st.title("img2img generator using API App")
 st.sidebar.markdown("""
 ## Code Explanation
 
+## [Original repository](https://github.com/procrastinando/img2img-automatic1111-API)
+
 This Python script performs image inpainting using a web API. It uses the `requests` library to send images as base64 strings to the API and retrieves the processed image.
 
 ### Key Components
@@ -44,6 +46,19 @@ This Python script performs image inpainting using a web API. It uses the `reque
 # Define the default API URL
 api_url = st.text_input("WebUI API URL (automatic1111)", value="http://127.0.0.1:7860")
 text_prompt = st.text_input("Text prompt for img2img", value="tree leaves")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    steps = st.slider("Steps", min_value=1, max_value=150, value=20)
+    cfg_scale = st.slider("CFG Scale", min_value=1.0, max_value=30.0, value=7.0, step=0.5)
+    width = st.number_input("Width", min_value=64, max_value=2048, value=512, step=64)
+    height = st.number_input("Height", min_value=64, max_value=2048, value=512, step=64)
+
+with col2:
+    denoising_strength = st.slider("Denoising Strength", min_value=0.0, max_value=1.0, value=0.75, step=0.05)
+    mask_blur = st.slider("Mask Blur", min_value=0, max_value=64, value=4)
+    inpainting_mask_invert = st.checkbox("Invert Mask")
 
 # Function to load an image with a default fallback
 def load_image(image_file, default_file):
