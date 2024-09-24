@@ -1,0 +1,26 @@
+# Use the continuumio/miniconda3 image as the base
+FROM continuumio/miniconda3
+
+# Set the working directory
+WORKDIR /projects
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y git && apt-get clean
+
+# Clone the projects
+RUN git clone https://github.com/procrastinando/projects
+
+# Create a conda environment for translator project and install dependencies
+RUN conda create --name translator python=3.10 -y \
+    && /bin/bash -c "source activate translator" \
+    && cd /projects/translator \
+    && pip install -r requirements.txt
+
+# Give execute permissions to the entrypoint script
+RUN chmod +x /projects/entrypoint.sh
+
+# Expose the ports for both projects
+EXPOSE 101 102
+
+# Start the entrypoint script
+CMD ["/projects/entrypoint.sh"]
