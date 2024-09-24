@@ -2,7 +2,7 @@
 FROM continuumio/miniconda3
 
 # Set the working directory
-WORKDIR /projects
+WORKDIR /
 
 # Install necessary packages
 RUN apt-get update && apt-get install -y git && apt-get clean
