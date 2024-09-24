@@ -12,6 +12,7 @@ RUN git clone https://github.com/procrastinando/projects .
 
 # Create a conda environment for csv-translator project and install dependencies
 RUN conda create --name projects python=3.10 -y \
+    && conda init \
     && conda activate projects \
     && pip install -r csv-translator/requirements.txt \
     && pip install -r img2img/requirements.txt \
