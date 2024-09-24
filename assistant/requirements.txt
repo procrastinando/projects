@@ -1,0 +1,16 @@
+faster-whisper
+streamlit
+streamlit-authenticator
+pyyaml
+openai
+azure-cognitiveservices-speech
+gTTS
+httpx
+pytube
+deep-translator
+srt
+psutil
+elevenlabslib
+pytz
+pandas
+easyocr
