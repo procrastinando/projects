@@ -59,13 +59,14 @@ RUN /bin/bash -c "source activate projects && \
     pip install --upgrade pip && \ 
     pip install -r csv-translator/requirements.txt && \
     pip install -r img2img/requirements.txt && \
-    pip install -r sub2audio/requirements.txt"
+    pip install -r sub2audio/requirements.txt \
+    pip install -r ip-insight/requirements.txt"
 
 # Set execute permission for the entrypoint script
 RUN chmod +x /projects/entrypoint.sh
 
 # Expose ports
-EXPOSE 50001 50002 50003
+EXPOSE 50001 50002 50003 50004
 
 # Start the container with the entry point script
 CMD ["/projects/entrypoint.sh"]
