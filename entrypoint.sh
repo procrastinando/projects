@@ -1,10 +1,10 @@
 #!/bin/bash
 
 source activate projects
-streamlit run /projects/csv-translator/app.py --server.port=50001 --server.maxUploadSize=1 --server.enableCORS=false &
-streamlit run /projects/img2img/app.py --server.port=50002 --server.maxUploadSize=1 --server.enableCORS=false &
-streamlit run /projects/sub2audio/app.py --server.port=50003 --server.maxUploadSize=1 --server.enableCORS=false &
-streamlit run /projects/ip-insight/app.py --server.port=50004 --server.maxUploadSize=1 --server.enableCORS=false &
+streamlit run /projects/csv-translator/app.py --server.port=50001 --server.maxUploadSize=1 --server.enableCORS=false --server.enableWebsocketCompression=true --server.headless=true &
+streamlit run /projects/img2img/app.py --server.port=50002 --server.maxUploadSize=1 --server.enableCORS=false --server.enableWebsocketCompression=true --server.headless=true &
+streamlit run /projects/sub2audio/app.py --server.port=50003 --server.maxUploadSize=1 --server.enableCORS=false --server.enableWebsocketCompression=true --server.headless=true &
+streamlit run /projects/ip-insight/app.py --server.port=50004 --server.maxUploadSize=1 --server.enableCORS=false --server.enableWebsocketCompression=true --server.headless=true &
 
 # # Run a second environment
 # source activate assistant
