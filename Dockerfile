@@ -88,7 +88,7 @@ WORKDIR /projects
 RUN apt-get update && apt-get install -y git && apt-get clean
 
 # Clone the GitHub repository
-RUN git clone https://github.com/procrastinando/projects /projects
+RUN git clone https://github.com/procrastinando/projects .
 
 # Create a new conda environment and install Python 3.10
 RUN conda create --name projects python=3.10 -y
