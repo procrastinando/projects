@@ -97,13 +97,13 @@ RUN conda create --name projects python=3.10 -y
 RUN /bin/bash -c "source /opt/conda/etc/profile.d/conda.sh && \
     conda activate projects && \
     pip install --upgrade pip && \
-    pip install -r requirements.txt"
+    pip install -r /projects/requirements.txt"
 
 # Set execute permission for the entrypoint script
-RUN chmod +x entrypoint.sh
+RUN chmod +x /projects/entrypoint.sh
 
 # Expose ports
 EXPOSE 8501
 
 # Start the container with the entry point script
-CMD ["entrypoint.sh"]
+CMD ["/bin/bash", "/projects/entrypoint.sh"]
