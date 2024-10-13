@@ -1,10 +1,8 @@
 #!/bin/bash
 
-source activate projects
-streamlit run /projects/csv_translator/csv_translator.py --server.port=8501 --server.maxUploadSize=1 &
-streamlit run /projects/img2img/img2img.py --server.port=8502 --server.maxUploadSize=1 &
-streamlit run /projects/sub2audio/sub2audio.py --server.port=8503 --server.maxUploadSize=1 &
-streamlit run /projects/ip_insight/ip_insight.py --server.port=8504 --server.maxUploadSize=1 &
+source /opt/conda/etc/profile.d/conda.sh
+conda activate projects
+streamlit run /projects/app.py --server.port=8501 --server.maxUploadSize=1
 
 # # Run a second environment
 # source activate assistant
