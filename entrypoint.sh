@@ -1,7 +1,6 @@
 #!/bin/bash
 
-source /opt/conda/etc/profile.d/conda.sh
-conda activate projects
+source activate projects
 streamlit run /projects/app.py --server.port=8501 --server.maxUploadSize=1
 
 # # Run a second environment

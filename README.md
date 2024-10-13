@@ -11,7 +11,7 @@ curl -fsSL https://get.docker.com | sudo sh
 - From the repository: `docker build -t projects https://github.com/procrastinando/projects.git#main:.`
 ### Option 1: Run by command:
 ```
-docker run -d -p 50001:50001 -p 50002:50002 -p 50003:50003 -p 50004:50004 projects
+docker run -d -p 8501:8501 projects
 ```
 ### Option 2: Run it as stack:
 ```
@@ -19,9 +19,6 @@ services:
   app:
     image: projects
     ports:
-      - "50001:50001"
-      - "50002:50002"
-      - "50003:50003"
-      - "50004:50004"
+      - "8501:8501"
     restart: unless-stopped
 ```
