@@ -66,7 +66,7 @@ RUN /bin/bash -c "source activate projects && \
 RUN chmod +x /projects/entrypoint.sh
 
 # Expose ports
-EXPOSE 50001 50002 50003 50004
+EXPOSE 8501 8502 8503 8504
 
 # Start the container with the entry point script
 CMD ["/projects/entrypoint.sh"]

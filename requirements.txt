@@ -1,0 +1,13 @@
+streamlit
+openai
+python-dotenv
+pandas
+Pillow
+dnspython
+ping3
+
+#torch # sub2audio
+#git+https://github.com/huggingface/parler-tts.git # sub2audio
+#transformers # sub2audio
+#soundfile # sub2audio
+#pysrt # sub2audio
