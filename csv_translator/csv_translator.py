@@ -7,6 +7,7 @@ from io import StringIO
 import requests
 import time
 import pandas as pd
+from deep_translator import GoogleTranslator
 
 def address_changed():
     try:
@@ -119,6 +120,13 @@ def run_lt(text, address, api_key, source, target):
         st.error(f"Error: {e}")
         return text
 
+def run_google(text, source, target):
+    try:
+        return GoogleTranslator(source=source, target=target).translate(text=text)
+    except Exception as e:
+        st.error(f"Error: {e}")
+        return text
+
 def translate_csv(csv_content, method_choice, model_choice, prompt, address, api_key, source, target):
     # Check if csv_content is already a StringIO object
     if isinstance(csv_content, StringIO):
@@ -145,6 +153,8 @@ def translate_csv(csv_content, method_choice, model_choice, prompt, address, api
             translated_row = [run_openai(cell, model_choice, prompt, api_key) if cell != '' else '' for cell in row]
         elif method_choice == 'Ollama':
             translated_row = [run_ollama(cell, model_choice, prompt, address) if cell != '' else '' for cell in row]
+        elif method_choice == 'Google':
+            translated_row = [run_google(cell, source, target) if cell != '' else '' for cell in row]
         else:
             translated_row = [run_lt(cell, address, api_key, source, target) if cell != '' else '' for cell in row]
         translated_rows.append(translated_row)
@@ -201,7 +211,7 @@ def main():
     Overall, this code enables seamless translation of CSV files by leveraging different APIs, with a user-friendly interface built using Streamlit.
     """)
 
-    method_choice = st.selectbox("Choose translation method", ("OpenAI", "Ollama", "Libre translate"))
+    method_choice = st.selectbox("Choose translation method", ("OpenAI", "Ollama", "Google", "Libre translate"))
 
     if method_choice == "OpenAI":
         prompt = st.text_area("Enter your translation prompt", value="Translate the following into English without giving explanations")
@@ -216,6 +226,22 @@ def main():
 
         models_list = list_models(address)
         model_choice = st.selectbox("Choose a model", models_list)
+    
+    elif method_choice == "Google":
+        google_list = [
+            'af', 'sq', 'am', 'ar', 'hy', 'az', 'eu', 'be', 'bn', 'bs', 'bg', 'ca',
+            'ceb', 'ny', 'zh-cn', 'zh-tw', 'co', 'hr', 'cs', 'da', 'nl', 'en', 'eo',
+            'et', 'tl', 'fi', 'fr', 'fy', 'gl', 'ka', 'de', 'el', 'gu', 'ht', 'ha',
+            'haw', 'iw', 'hi', 'hmn', 'hu', 'is', 'ig', 'id', 'ga', 'it', 'ja', 'jw',
+            'kn', 'kk', 'km', 'rw', 'ko', 'ku', 'ky', 'lo', 'la', 'lv', 'lt', 'lb',
+            'mk', 'mg', 'ms', 'ml', 'mt', 'mi', 'mr', 'mn', 'my', 'ne', 'no', 'or',
+            'ps', 'fa', 'pl', 'pt', 'pa', 'ro', 'ru', 'sm', 'gd', 'sr', 'st', 'sn',
+            'sd', 'si', 'sk', 'sl', 'so', 'es', 'su', 'sw', 'sv', 'tg', 'ta', 'tt',
+            'te', 'th', 'tr', 'tk', 'uk', 'ur', 'ug', 'uz', 'vi', 'cy', 'xh', 'yi',
+            'yo', 'zu'
+        ]
+        source = st.selectbox("From:", ['auto'] + google_list)
+        target = st.selectbox("To:", google_list)
 
     else:
         if "lang_list" not in st.session_state:
@@ -236,13 +262,19 @@ def main():
         if input_file is not None:
             # Read the CSV file content
             bytes_data = input_file.getvalue()
-            csv_content = StringIO(input_file.getvalue().decode("utf-8"))
+            try:
+                csv_content = StringIO(input_file.getvalue().decode("utf-8"))
+            except UnicodeDecodeError:
+                csv_content = StringIO(input_file.getvalue().decode("windows-1252"))
 
             if method_choice == "OpenAI":
                 csv_data = translate_csv(csv_content, method_choice=method_choice, model_choice=model_choice, prompt=prompt, address='', api_key=api_key, source='', target='')
                 success(csv_data)
             elif method_choice == "Ollama":
                 csv_data = translate_csv(csv_content, method_choice=method_choice, model_choice=model_choice, prompt=prompt, address=address, api_key='', source='', target='')
+                success(csv_data)
+            elif method_choice == "Google":
+                csv_data = translate_csv(csv_content, method_choice=method_choice, model_choice='', prompt='', address='', api_key='', source=source, target=target)
                 success(csv_data)
             else:
                 csv_data = translate_csv(csv_content, method_choice=method_choice, model_choice='', prompt='', address=address, api_key=api_key, source=source, target=target)
