@@ -5,7 +5,6 @@ import streamlit as st
 import io
 from io import StringIO
 import requests
-import time
 import pandas as pd
 from deep_translator import GoogleTranslator
 
@@ -48,15 +47,18 @@ def list_models(address):
         st.error(f"Error: {e}")
         return ('No models available!')
 
-def run_openai(text, model, prompt, api_key):
+def run_openai(text, model, prompt, contexto, api_key):
     try:
         client = openai.OpenAI(api_key=api_key)  # Initialize the client inside the function
+        messages = []
+        messages.append({"role": "system", "content": contexto})
+        messages.append({"role": "user", "content": f"{prompt}: {text}"})
+
         response = client.chat.completions.create(
             model=model,
-            messages=[
-                {"role": "user", "content": f"{prompt}: {text}"}
-            ]
+            messages=messages
         )
+
         # Extract the translated text from the API response
         return response.choices[0].message.content
     except Exception as e:
@@ -127,7 +129,7 @@ def run_google(text, source, target):
         st.error(f"Error: {e}")
         return text
 
-def translate_csv(csv_content, method_choice, model_choice, prompt, address, api_key, source, target):
+def translate_csv(csv_content, delimiter, method_choice, model_choice, prompt, context, address, api_key, source, target):
     # Check if csv_content is already a StringIO object
     if isinstance(csv_content, StringIO):
         stringio = csv_content
@@ -137,7 +139,7 @@ def translate_csv(csv_content, method_choice, model_choice, prompt, address, api
 
     # Reset the position of the StringIO object to the beginning
     stringio.seek(0)
-    csv_reader = csv.reader(stringio)
+    csv_reader = csv.reader(stringio, delimiter=delimiter)
 
     # Get the total number of rows to process for the progress bar
     csv_lines = list(csv_reader)  # Convert the reader to a list of rows
@@ -149,8 +151,21 @@ def translate_csv(csv_content, method_choice, model_choice, prompt, address, api
 
     translated_rows = []
     for index, row in enumerate(csv_lines):
+
+        if context != 0:
+            # Get the previous 5 rows, starting from the max(0, index-5)
+            previous_context = csv_lines[max(0, index - context):index]
+            # Get the next 5 rows, stopping at the min(total_rows, index+5)
+            next_context = csv_lines[index + 1:min(total_rows, index + context + 1)]
+            
+            # Flatten the previous and next rows and join into a string
+            contexto_list = [cell for sublist in previous_context + next_context for cell in sublist]
+            contexto = ", ".join(contexto_list)
+        else:
+            contexto = ""            
+
         if method_choice == 'OpenAI':
-            translated_row = [run_openai(cell, model_choice, prompt, api_key) if cell != '' else '' for cell in row]
+            translated_row = [run_openai(cell, model_choice, prompt, contexto, api_key) if cell != '' else '' for cell in row]
         elif method_choice == 'Ollama':
             translated_row = [run_ollama(cell, model_choice, prompt, address) if cell != '' else '' for cell in row]
         elif method_choice == 'Google':
@@ -165,7 +180,7 @@ def translate_csv(csv_content, method_choice, model_choice, prompt, address, api
         progress_text.text(f"Completed: {index + 1}/{total_rows}")  # Update progress text
 
     csv_data = pd.DataFrame(translated_rows)
-    csv_data = csv_data.to_csv().encode("utf-8-sig")
+    csv_data = csv_data.to_csv(sep=delimiter).encode("utf-8-sig")
 
     # Ensure output is encoded in UTF-8
     return csv_data
@@ -191,7 +206,7 @@ def main():
     This code implements a CSV translation application using **Streamlit**, which allows users to translate the contents of a CSV file into different languages through various translation methods. Here's a breakdown of its key components:
 
     #### Libraries Used
-    - **`os`, `csv`, `io`, `requests`, `time`, `pandas`**: For handling file operations, HTTP requests, and data manipulation.
+    - **`os`, `csv`, `io`, `requests`, `pandas`**: For handling file operations, HTTP requests, and data manipulation.
     - **`openai`**: To interact with OpenAI's translation models.
     - **`streamlit`**: For building the web interface.
 
@@ -214,14 +229,15 @@ def main():
     method_choice = st.selectbox("Choose translation method", ("OpenAI", "Ollama", "Google", "Libre translate"))
 
     if method_choice == "OpenAI":
-        prompt = st.text_area("Enter your translation prompt", value="Translate the following into English without giving explanations")
+        prompt = st.text_area("Enter your translation prompt", value="Translate the following into English without giving any explanations. If for some reason you can't translate this, simply reply: I can't translate that")
         api_key = st.text_input("Enter your API Key", type="password")
+        context = st.slider('Select a context size', min_value=0, max_value=20, value=5)
 
         models_list = ("gpt-4o-mini", "gpt-4o")
         model_choice = st.selectbox("Choose a model", models_list)
 
     elif method_choice == "Ollama":
-        prompt = st.text_area("Enter your translation prompt", value="Translate the following into English without giving explanations")
+        prompt = st.text_area("Enter your translation prompt", value="Translate the following into English without giving any explanations. If for some reason you can't translate this, simply reply: I can't translate that")
         address = st.text_area("Enter Ollama address", value="localhost:11434")
 
         models_list = list_models(address)
@@ -256,9 +272,15 @@ def main():
 
     # File uploader
     input_file = st.file_uploader("Upload a CSV file", type="csv")
+    if input_file:
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            run_button = st.button("Run")
+        with col2:
+            delimiter = st.text_input("Delimiter", value=",")
 
     # Run button
-    if st.button("Run"):
+    if run_button:
         if input_file is not None:
             # Read the CSV file content
             bytes_data = input_file.getvalue()
@@ -268,16 +290,16 @@ def main():
                 csv_content = StringIO(input_file.getvalue().decode("windows-1252"))
 
             if method_choice == "OpenAI":
-                csv_data = translate_csv(csv_content, method_choice=method_choice, model_choice=model_choice, prompt=prompt, address='', api_key=api_key, source='', target='')
+                csv_data = translate_csv(csv_content, delimiter=delimiter, method_choice=method_choice, model_choice=model_choice, prompt=prompt, context=context, address='', api_key=api_key, source='', target='')
                 success(csv_data)
             elif method_choice == "Ollama":
-                csv_data = translate_csv(csv_content, method_choice=method_choice, model_choice=model_choice, prompt=prompt, address=address, api_key='', source='', target='')
+                csv_data = translate_csv(csv_content, delimiter=delimiter, method_choice=method_choice, model_choice=model_choice, prompt=prompt, context=0, address=address, api_key='', source='', target='')
                 success(csv_data)
             elif method_choice == "Google":
-                csv_data = translate_csv(csv_content, method_choice=method_choice, model_choice='', prompt='', address='', api_key='', source=source, target=target)
+                csv_data = translate_csv(csv_content, delimiter=delimiter, method_choice=method_choice, model_choice='', prompt='', context=0, address='', api_key='', source=source, target=target)
                 success(csv_data)
             else:
-                csv_data = translate_csv(csv_content, method_choice=method_choice, model_choice='', prompt='', address=address, api_key=api_key, source=source, target=target)
+                csv_data = translate_csv(csv_content, delimiter=delimiter, method_choice=method_choice, model_choice='', prompt='', context=0, address=address, api_key=api_key, source=source, target=target)
                 success(csv_data)
         else:
             st.error("Please upload a file")
