@@ -273,14 +273,10 @@ def main():
     # File uploader
     input_file = st.file_uploader("Upload a CSV file", type="csv")
     if input_file:
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            run_button = st.button("Run")
-        with col2:
-            delimiter = st.text_input("Delimiter", value=",")
+        delimiter = st.text_input("Delimiter", value=",")
 
     # Run button
-    if run_button:
+    if st.button("Run"):
         if input_file is not None:
             # Read the CSV file content
             bytes_data = input_file.getvalue()
