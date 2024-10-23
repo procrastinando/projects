@@ -6,6 +6,8 @@ Pillow
 dnspython
 ping3
 deep-translator
+PyYAML
+rendercv
 
 #torch # sub2audio
 #git+https://github.com/huggingface/parler-tts.git # sub2audio
