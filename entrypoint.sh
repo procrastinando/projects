@@ -1,7 +1,8 @@
 #!/bin/bash
 
 source activate projects
-streamlit run /projects/app.py --server.port=8501 --server.maxUploadSize=1
+streamlit run /projects/app.py --server.port=8501 --server.maxUploadSize=1 &
+python /projects/telegram_bot.py
 
 # # Run a second environment
 # source activate assistant

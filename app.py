@@ -3,10 +3,10 @@ from csv_translator import csv_translator
 from img2img import img2img
 from ip_insight import ip_insight
 from sub2audio import sub2audio
+from cv_maker import cv_maker
+import yaml
 
 def intro():
-    import streamlit as st
-
     st.sidebar.success("Select a demo above.")
     st.title("Ibarcena Demos")
     st.markdown(
@@ -60,6 +60,18 @@ def intro():
         """
     )
 
+    with open("config.yaml", "r") as file:
+        config = yaml.safe_load(file)
+
+    if config['token'] == "":
+        telegram_token = st.text_input("Enter telegram token")
+        bot_username = st.text_input("Enter bot username, for example: cool_bot")
+        if st.button("Set token"):
+            config['token'] = telegram_token
+            config['bot_username'] = bot_username
+            with open("config.yaml", "w") as file:
+                yaml.dump(config, file)
+
 st.set_page_config(page_title="Ibarcena Demos", page_icon="icon.webp")
 
 def main():
@@ -69,6 +81,7 @@ def main():
         "img2img SD API": img2img.main,
         "IP insight": ip_insight.main,
         "Subtitle to audio": sub2audio.main,
+        "CV maker": cv_maker.main,
     }
 
     demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())
