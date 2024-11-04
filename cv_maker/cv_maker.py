@@ -38,43 +38,21 @@ def new_cv(name, user_dir):
         shutil.os.makedirs(f"{script_dir}/{user_dir}/{name}")
         subprocess.run(["rendercv", "new", name], cwd=f"{script_dir}/{user_dir}/{name}")
 
-# def render_pdf(yaml_file, user_dir, name):
-#     subprocess.run(["rendercv", "render", yaml_file], cwd=f"{script_dir}/{user_dir}/{name}")
-#     # Delete all files in the directory that are not .pdf
-#     for file in os.listdir(f"{script_dir}/{user_dir}/{name}/rendercv_output"):
-#         file_path = os.path.join(script_dir, user_dir, name, 'rendercv_output', file)
-#         if os.path.isfile(file_path) and not file.endswith('.pdf'):
-#             os.remove(file_path)
-#     st.rerun()
-
 def render_pdf(yaml_file, user_dir, name):
     # Run the render command and capture the output for logging
     result = subprocess.run(["rendercv", "render", yaml_file],
                             cwd=f"{script_dir}/{user_dir}/{name}",
                             capture_output=True, text=True)
-    
-    # Check if the render result was successful
-    # if result.returncode != 0:
-    #     st.error("There was an error while rendering the PDF.")
-    #     st.text("Render command output:")
-    #     st.error(result.stdout)
-    #     st.text(result.stderr)
-    #     return
-    
     # Check if the PDF was generated
     output_dir = f"{script_dir}/{user_dir}/{name}/rendercv_output"
 
     if not os.path.exists(output_dir):
-        # No PDFs were found, log the output
-        # st.error("Failed to locate the rendered PDF file.")
-        # st.text("Render command output:")
+
         st.error(result.stdout)
-        st.error(result.stderr)
     else:
         pdf_files = [f for f in os.listdir(output_dir) if f.endswith('.pdf')]
         # Success! Clean up the non-PDF files
         st.error(result.stdout)
-        st.error(result.stderr)
         for file in os.listdir(output_dir):
             file_path = os.path.join(output_dir, file)
             if os.path.isfile(file_path) and not file.endswith('.pdf'):
