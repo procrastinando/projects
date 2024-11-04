@@ -63,15 +63,15 @@ def render_pdf(yaml_file, user_dir, name):
     
     # Check if the PDF was generated
     output_dir = f"{script_dir}/{user_dir}/{name}/rendercv_output"
-    pdf_files = [f for f in os.listdir(output_dir) if f.endswith('.pdf')]
-    
-    if not pdf_files:
+
+    if not os.path.exists(output_dir):
         # No PDFs were found, log the output
         # st.error("Failed to locate the rendered PDF file.")
         # st.text("Render command output:")
         st.error(result.stdout)
         st.error(result.stderr)
     else:
+        pdf_files = [f for f in os.listdir(output_dir) if f.endswith('.pdf')]
         # Success! Clean up the non-PDF files
         st.error(result.stdout)
         st.error(result.stderr)
