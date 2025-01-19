@@ -1,5 +1,6 @@
 import streamlit as st
 from csv_translator import csv_translator
+from srt_translator import srt_translator
 from img2img import img2img
 from ip_insight import ip_insight
 from sub2audio import sub2audio
@@ -78,6 +79,7 @@ def main():
     page_names_to_funcs = {
         "—": intro,
         "CSV translator": csv_translator.main,
+        "SRT translator": srt_translator.main,
         "img2img SD API": img2img.main,
         "IP insight": ip_insight.main,
         "Subtitle to audio": sub2audio.main,
