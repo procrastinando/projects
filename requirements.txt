@@ -10,6 +10,10 @@ pyyaml
 rendercv
 streamlit-authenticator
 bcrypt
+pysrt
+langdetect
+googletrans==4.0.0-rc1
+PyYAML
 
 #torch # sub2audio
 #git+https://github.com/huggingface/parler-tts.git # sub2audio
