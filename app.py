@@ -1,4 +1,5 @@
 import streamlit as st
+from sub_translator import sub_translator
 from csv_translator import csv_translator
 from srt_translator import srt_translator
 from img2img import img2img
@@ -84,6 +85,7 @@ def main():
         "IP insight": ip_insight.main,
         "Subtitle to audio": sub2audio.main,
         "CV maker": cv_maker.main,
+        "Subtitle translator": sub_translator.main,
     }
 
     demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())

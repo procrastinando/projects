@@ -1,0 +1,6 @@
+streamlit
+streamlit-authenticator
+pysrt
+langdetect
+googletrans==4.0.0-rc1
+PyYAML
