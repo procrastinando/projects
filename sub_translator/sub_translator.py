@@ -259,8 +259,6 @@ def translate_subtitle(input_srt_path, target_lang_code, output_srt_path, progre
 # --- Main Application Function ---
 def main():
     """Runs the Streamlit application."""
-    st.set_page_config(page_title="Video Subtitle Translator", layout="wide")
-
     # --- Authentication ---
     try:
         with open(CONFIG_FILE, 'r', encoding='utf-8') as file: # Specify encoding

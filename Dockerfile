@@ -5,7 +5,7 @@ FROM continuumio/miniconda3
 WORKDIR /projects
 
 # Install necessary system packages such as git
-RUN apt-get update && apt-get install -y git && apt-get clean
+RUN apt-get update && apt-get install -y git ffmpeg && apt-get clean
 
 # Clone the GitHub repository
 RUN git clone https://github.com/procrastinando/projects .
